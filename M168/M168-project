@@ -1,0 +1,37 @@
+# -*- coding: utf-8 -*-
+
+import networkx as nx
+import matplotlib.pyplot as plt
+import pandas as pd # won't need right away
+
+
+'''
+Reading in network data from an edge list
+Example: Russian trade network.
+'''
+
+file = open("circle_78813.txt", "r")  # saves the file
+lines = file.read().splitlines()    # Reads in the file line by line, saves each line as an element in a list
+
+# L.split('\t') splits line L every time it sees \t and stores each piece in a list. 
+# It returns a list with two elements, the source node and target node.
+sources = [int(L.split('\x20')[0]) for L in lines]
+targets = [int(L.split('\x20')[1]) for L in lines]
+
+# Make the network
+G = nx.Graph()
+E = len(sources)    # Number of edges
+print("num nodes= " + repr(E))
+for i in range(E):
+    G.add_edge(sources[i], targets[i])
+
+# Draw the network. (for the kicks)
+# nx.draw(G, with_labels = False)
+# plt.show()
+
+# Better visualization. (Can make a bigger difference with larger networks.)
+pos = nx.spring_layout(G)   # Uses Fruchterman-Reingold algorithm to find "optimal" node positions
+plt.figure(figsize = (30, 30))  # Make figure bigger so we can actually see all the edges! (See what happens otherwise by calling nx.draw(G) before this line.)
+nx.draw(G, pos, node_size = 5, edge_color = '#EB9A4955', with_labels = False)
+plt.show()
+

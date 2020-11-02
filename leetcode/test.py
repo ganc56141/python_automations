@@ -11,15 +11,46 @@ class Solution:
                     return [i, j]
         return [-1, -1]
 
+def ceasar_cipher(original, key):
+    encrypted = ''
+    for i in range (len(original)):
+        char = chr(ord(original[i]) + key) if ord(original[i]) + key <= 122 else chr(ord(original[i]) + key - 26)
+        encrypted += char
+        pass
+    return encrypted
+
+
+def decrypt(encrypted, key):
+    decrypted = ''
+    for i in range (len(encrypted)):
+        char = chr(ord(encrypted[i]) - key) if ord(encrypted[i]) - key >= 97 else chr(ord(encrypted[i]) - key + 26)
+        decrypted += char
+        pass
+    return decrypted
+
 if __name__ == '__main__':
 
-    nm = input().split()
+    # try:
+    #     int(input("Enter a number: "))
+    # except ZeroDivisionError as err:
+    #     print(err)
+    # except ValueError as err:
+    #     print(err)
 
-    n = int(nm[0])
 
-    clients = []
+    bob = ['a', 'b', 'c', 'd', 'e']
 
-    for _ in range(n):
-        clients.append(list(map(int, input().rstrip().split())))
+    index = int(input())
+    
+    print(bob[index])
 
-    print(nm)
+    # nm = input().split()
+
+    # n = int(nm[0])
+
+    # clients = []
+
+    # for _ in range(n):
+    #     clients.append(list(map(int, input().rstrip().split())))
+
+    # print(nm)
