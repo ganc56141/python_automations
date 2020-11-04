@@ -10,7 +10,8 @@ x = sym.symbols('x')    # since x is our only variable symbol here
 
 # generate derivatives
 #deriv_0 = '1 - 4*x*cos(x) + 2*x**2 + cos(2*x)'  # aka original
-deriv_0 = 'exp(x) + 2**(-x) + 2*cos(x) - 6'
+#deriv_0 = 'exp(x) + 2**(-x) + 2*cos(x) - 6'
+deriv_0 = 'x**2 - 3'
 deriv_1 = sym.diff(deriv_0, x)
 deriv_2 = sym.diff(deriv_1, x)
 
@@ -32,8 +33,10 @@ def bisection(a, b, N, acc):
         # print(str(i) + " iteration")
         
         p = a+(b-a)/2
-
+        i += 1      # as soon as we do a division to get the next p, the iteration has occured, thus add 1
         result = f(p)
+
+        print('(' + str(i) + ')' + ': ' + str(p))
         print('result: ' + str(result))
 
         # if within accuracy range
@@ -48,18 +51,18 @@ def bisection(a, b, N, acc):
             b = p
         elif result < 0:
             a = p
-        i += 1
 
     print("Max iteration " + str(N) + " reached.")
 
 
 def fixed_point(low, high, max_iter, acc):
     p_in=low      # starting point (the input to equation)
+    print('(0): ' + str(p_in))
     accuracy = pow(10,acc)
     for i in range(1, max_iter+1):
         p_out = f(p_in)      # output of the equation
         
-        print('In: ' + str(p_in) + ' Out: ' + str(p_out))
+        print('(' + str(i) + ')' + ': ' + str(p_out))
 
         error = abs(p_out-p_in)
         
@@ -72,15 +75,18 @@ def fixed_point(low, high, max_iter, acc):
     print("Max iteration " + str(max_iter) + " reached.")
         
 
-def secant_method(a, b, max_iter, acc):
+def secant_method(a, b, max_iter, acc, p1=None):
     accuracy = pow(10,acc)
     p0 = a      # taking start to be lower bound
-    p1 = a+(b-a)/2      # using bisection to get second point
+    if p1 == None: p1 = a+(b-a)/2      # using bisection to get second point
     
+    print('(0): ' + str(p0))
+    print('(1): ' + str(p1))
+
     for i in range(1, max_iter+1):
         p2 = p1 - (f(p1) / (f(p1) - f(p0))) * (p1 - p0)
 
-        #print('(' + str(i) + ')' + ': ' + str(p2))
+        print('(' + str(i+1) + ')' + ': ' + str(p2))        # i+1 for offset since p0 and p1 are given
         
         error = abs(p2-p1)      # again, define error as difference (not how close to 0)
 
@@ -96,15 +102,18 @@ def secant_method(a, b, max_iter, acc):
 
 
 # usually slower than secant method in practice
-def false_position_method(a, b, max_iter, acc):
+def false_position_method(a, b, max_iter, acc, p1=None):
     accuracy = pow(10,acc)
     p0 = a      # taking start to be lower bound
-    p1 = a+(b-a)/2
+    if p1 == None: p1 = a+(b-a)/2      # using bisection to get second point
+    
+    print('(0): ' + str(p0))
+    print('(1): ' + str(p1))
     
     for i in range(1, max_iter+1):
         p2 = p1 - (f(p1) / (f(p1) - f(p0))) * (p1 - p0)
 
-        #print('Out: ' + str(p2))
+        print('(' + str(i+1) + ')' + ': ' + str(p2))        # i+1 for offset since p0 and p1 are given
 
         error = abs(p2 - p1)
         
@@ -134,7 +143,8 @@ def newton(a, max_iter, acc, opt):
     accuracy = pow(10,acc)
     p0 = a      # random guess within the range
     p1 = -1
-    
+    print('(0): ' + str(p0))
+
     for i in range(1, max_iter+1):
         if opt == 0:          # run normal newton
             p1 = p0 - f(p0)/fp(p0)
@@ -164,36 +174,22 @@ def newton(a, max_iter, acc, opt):
 def testing_before():
     print()
 
-    # bisection method
-    print("running bisection")
+    # newton's method
+    print("running newton's method")
     print("---------------------------------")
-    bisection(5, 0, 100, -15)      # third parameter is max # of iterations
+    newton(1, 10, -5, 0)
     print()
+   
+
     # fixed point
-    # fixed_point(1, 2, 100, -4)
+    fixed_point(1, 2, 100, -3)
 
     # secant method
     print("running secant")
     print("---------------------------------")
-    secant_method(0, 5, 100, -5)
+    secant_method(1, 5, 100, -5, 2)        #a, b, iterations, accuracy, p1 (optional)
     print()
 
-    # method of false position
-    print("running false position")
-    print("---------------------------------")
-    false_position_method(0.5, pi/4, 1000, -5)
-    print()
-
-
-def testing_now():
-    print()
-
-
-    # newton's method
-    print("running newton's method")
-    print("---------------------------------")
-    newton(1, 100, -5, 0)
-    print()
 
     # modified newton's method
     print("running modified newton's method")
@@ -201,8 +197,34 @@ def testing_now():
     newton(1, 100, -5, 1)
     print()
 
+    # bisection method
+    print("running bisection")
+    print("---------------------------------")
+    bisection(1, 2, 100, -5)      # third parameter is max # of iterations
+    print()
+
+
+def testing_now():
+    print()
+    
+   
+    # method of false position
+    print("running false position")
+    print("---------------------------------")
+    false_position_method(1, 5, 100, -3, 2)
+    print()
+
+
+def exam():
+    # num = float(input())
+    # print("f: " + repr(f(num)))
+    print(deriv_1)
+
 if __name__ == '__main__':
     testing_now()
+    #exam()
+    
+    pass
 
 
 
